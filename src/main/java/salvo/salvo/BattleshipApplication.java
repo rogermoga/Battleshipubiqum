@@ -12,6 +12,8 @@ public class BattleshipApplication {
 		SpringApplication.run(BattleshipApplication.class, args);
 
 	}
+
+
 	@Bean
 	public CommandLineRunner initData(PlayerRepository playerRepository, GameRepository gameRepository,  GamePlayerRepository gamePlayerRepository) {
 		return (args) -> {
