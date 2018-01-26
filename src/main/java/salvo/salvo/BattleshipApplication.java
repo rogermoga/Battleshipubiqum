@@ -53,6 +53,7 @@ public class BattleshipApplication {
 			gamePlayerRepository.save(gamePlayer2);
 			gamePlayerRepository.save(gamePlayer3);
 		};
+
 	}
 
 }
