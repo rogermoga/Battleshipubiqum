@@ -1,5 +1,7 @@
 package salvo.salvo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.Date;
 import java.time.LocalDate;
@@ -23,6 +25,10 @@ public class Game {
 
     }
 
+    public long getId() {
+        return id;
+    }
+
     public void setDate(Date date) {
         this.date = date;
     }
@@ -32,6 +38,7 @@ public class Game {
         this.date = Date.from(this.date.toInstant().plusSeconds(3600));
     }
 
+    @JsonIgnore
     public Set<GamePlayer> getGameplayers() {
         return gameplayers;
     }

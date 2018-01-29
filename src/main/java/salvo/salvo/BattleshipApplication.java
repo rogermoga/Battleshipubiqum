@@ -13,7 +13,6 @@ public class BattleshipApplication {
 
 	}
 
-
 	@Bean
 	public CommandLineRunner initData(PlayerRepository playerRepository, GameRepository gameRepository,  GamePlayerRepository gamePlayerRepository) {
 		return (args) -> {
