@@ -23,7 +23,6 @@ public class BattleshipApplication {
 			Player player3 = new Player("Kim", "Bauer");
 			Player player4 = new Player("David", "Palmer");
 			Player player5 = new Player("Michelle", "Dessler");
-
 			//We save the players in the playerRepository
 			playerRepository.save(player1);
 			playerRepository.save(player2);
@@ -35,21 +34,20 @@ public class BattleshipApplication {
 			Game game1 = new Game();
 			Game game2 = new Game();
 			Game game3 = new Game();
-
 			//We increase the dates of the games
 			game2.increaseDate();
 			game3.increaseDate();
 			game3.increaseDate();
-
 			//We save the games
             gameRepository.save(game1);
             gameRepository.save(game2);
 			gameRepository.save(game3);
 
+			//We create the gameplayers
 			GamePlayer gamePlayer1 = new GamePlayer(game1,player1);
 			GamePlayer gamePlayer2 = new GamePlayer(game2,player2);
 			GamePlayer gamePlayer3 = new GamePlayer(game3,player3);
-
+			//We save the gameplayers
 			gamePlayerRepository.save(gamePlayer1);
 			gamePlayerRepository.save(gamePlayer2);
 			gamePlayerRepository.save(gamePlayer3);
