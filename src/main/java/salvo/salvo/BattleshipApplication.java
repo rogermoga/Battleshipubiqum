@@ -45,12 +45,14 @@ public class BattleshipApplication {
 
 			//We create the gameplayers
 			GamePlayer gamePlayer1 = new GamePlayer(game1,player1);
+			GamePlayer gamePlayer4 = new GamePlayer(game1,player5);
 			GamePlayer gamePlayer2 = new GamePlayer(game2,player2);
 			GamePlayer gamePlayer3 = new GamePlayer(game3,player3);
 			//We save the gameplayers
 			gamePlayerRepository.save(gamePlayer1);
 			gamePlayerRepository.save(gamePlayer2);
 			gamePlayerRepository.save(gamePlayer3);
+			gamePlayerRepository.save(gamePlayer4);
 		};
 
 	}
