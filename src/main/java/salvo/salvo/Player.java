@@ -47,4 +47,7 @@ public class Player {
     public String toString() {
         return username + " "+ email;
     }
+    public long getId(){
+        return id;
+    }
 }

@@ -20,12 +20,14 @@ public class GamePlayer {
     @JoinColumn(name="Player_id")
     private Player player1;
 
+
     public GamePlayer(){};
 
-    public GamePlayer(Game game, Player player){
+    public GamePlayer(Game game, Player player1){
         this.date = new Date();
         this.game1 = game;
-        this.player1 = player;
+        this.player1 = player1;
+
     }
 
     public Date getDate() {
@@ -52,7 +54,11 @@ public class GamePlayer {
         this.player1 = player1;
     }
 
+
+
     public long getId() {
         return id;
     }
+
+
 }
