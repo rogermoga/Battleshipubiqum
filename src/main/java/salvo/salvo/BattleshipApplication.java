@@ -18,11 +18,11 @@ public class BattleshipApplication {
 		return (args) -> {
 
 			// We create the players
-			Player player1 = new Player("Jack", "Bauer");
-			Player player2 = new Player("Chloe", "O'Brian");
-			Player player3 = new Player("Kim", "Bauer");
-			Player player4 = new Player("David", "Palmer");
-			Player player5 = new Player("Michelle", "Dessler");
+			Player player1 = new Player("Jack", "jBauer@gmail.com");
+			Player player2 = new Player("Chloe", "COBrian@gmail.com");
+			Player player3 = new Player("Kim", "patatas@gmail.com");
+			Player player4 = new Player("David", "Palmer@gmail.com");
+			Player player5 = new Player("Michelle", "Dessler@gmail.com");
 			//We save the players in the playerRepository
 			playerRepository.save(player1);
 			playerRepository.save(player2);
