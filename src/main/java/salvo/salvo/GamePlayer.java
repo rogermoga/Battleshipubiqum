@@ -2,6 +2,8 @@ package salvo.salvo;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class GamePlayer {
@@ -19,6 +21,9 @@ public class GamePlayer {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="Player_id")
     private Player player1;
+
+    @OneToMany(mappedBy="gamePlayer", fetch=FetchType.EAGER)
+    Set<Ship> ships = new HashSet<>();
 
 
     public GamePlayer(){};
@@ -54,7 +59,9 @@ public class GamePlayer {
         this.player1 = player1;
     }
 
-
+    public Set<Ship> getShips() {
+        return ships;
+    }
 
     public long getId() {
         return id;
