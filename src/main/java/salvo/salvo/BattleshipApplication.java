@@ -85,7 +85,6 @@ public class BattleshipApplication {
 			PatrolBoat.setLocations(locations22);
 			Destroyer.setLocations(locations22);
 
-
 			//We save the ships
 			shipRepository.save(Carrier);
 			shipRepository.save(Battleship);
