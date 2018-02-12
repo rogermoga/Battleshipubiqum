@@ -45,6 +45,7 @@ public class Ship {
 
     public void setGamePlayer(GamePlayer gamePlayer) {
         this.gamePlayer = gamePlayer;
+        gamePlayer.addShip(this);
     }
 
     public List<String> getLocations() {

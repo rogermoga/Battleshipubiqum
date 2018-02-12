@@ -39,6 +39,10 @@ public class GamePlayer {
         return date;
     }
 
+    public void addShip(Ship ship){
+    ships.add(ship);
+    }
+
     public void setDate(Date date) {
         this.date = date;
     }

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.*;
 
 @RestController
+@RequestMapping("/api")
 public class GamesRestController {
 
 
@@ -18,7 +19,7 @@ public class GamesRestController {
     @Autowired
     private GamePlayerRepository gamePlayerRepository;
 
-    @RequestMapping("/api/games")
+    @RequestMapping("/games")
     public List<Map<String, Object>> dtoGames(){
         List<Map<String, Object>> listdto = new ArrayList<Map<String,Object>>();
         // llenar lista
@@ -35,7 +36,7 @@ public class GamesRestController {
         return listdto;
     }
 
-    @RequestMapping("/api/game_view/{nn}")
+    @RequestMapping("/game_view/{nn}")
     public  Map<String, Object> dtoGameView(@PathVariable Long nn){
 
         //seleccionamos el gameplayer que nos ha dado el parametro nn
