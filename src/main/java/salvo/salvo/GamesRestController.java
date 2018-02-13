@@ -74,9 +74,35 @@ public class GamesRestController {
         }
         mapDto.put("Ships", shipsInfo);
 
+        List<Map<String , Object>> salvoesInfo = MakeSalvoesList(gamePlayer.getSalvoes());
+
+
+
+        mapDto.put("Salvoes", salvoesInfo);
+
         return mapDto;
 
     }
+
+    private List<Map<String,Object>> MakeSalvoesList(Set<Salvo> salvoes){
+
+        List<Map<String, Object>> salvoesList = new ArrayList<Map<String, Object>>();
+        for (Salvo salvo : salvoes){
+
+            salvoesList.add(MakeSalvoDTO(salvo));
+        }
+        return salvoesList;
+    }
+
+    private Map<String, Object> MakeSalvoDTO(Salvo salvo){
+        Map<String, Object> salvoDTO = new HashMap<>();
+            salvoDTO.put("turn", salvo.getTurn());
+            salvoDTO.put("player", salvo.getGamePlayer().getId());
+            salvoDTO.put("locations", salvo.getLocations());
+
+        return salvoDTO;
+    }
+
 
     private Map<String, Object> MakeShipDTO(Ship ship){
         Map<String, Object> shipDTO = new LinkedHashMap<>();

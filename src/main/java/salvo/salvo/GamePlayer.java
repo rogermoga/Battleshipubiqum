@@ -1,9 +1,7 @@
 package salvo.salvo;
 
 import javax.persistence.*;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 public class GamePlayer {
@@ -25,8 +23,11 @@ public class GamePlayer {
     @OneToMany(mappedBy="gamePlayer", fetch=FetchType.EAGER)
     Set<Ship> ships = new HashSet<>();
 
+    @OneToMany(mappedBy="gamePlayer", fetch=FetchType.EAGER)
+    Set<Salvo> salvoes = new HashSet<>();
 
-    public GamePlayer(){};
+
+    public GamePlayer(){}
 
     public GamePlayer(Game game, Player player1){
         this.date = new Date();
@@ -41,6 +42,10 @@ public class GamePlayer {
 
     public void addShip(Ship ship){
     ships.add(ship);
+    }
+
+    public void addSalvo(Salvo salvo){
+        salvoes.add(salvo);
     }
 
     public void setDate(Date date) {
@@ -71,5 +76,11 @@ public class GamePlayer {
         return id;
     }
 
+    public Set<Salvo> getSalvoes() {
+        return salvoes;
+    }
 
+    public void setSalvoes(Set<Salvo> salvoes) {
+        this.salvoes = salvoes;
+    }
 }

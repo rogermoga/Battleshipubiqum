@@ -5,6 +5,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -18,7 +19,7 @@ public class BattleshipApplication {
 	}
 
 	@Bean
-	public CommandLineRunner initData(ShipRepository shipRepository, PlayerRepository playerRepository, GameRepository gameRepository,  GamePlayerRepository gamePlayerRepository) {
+	public CommandLineRunner initData(SalvoRepository salvoRepository, ShipRepository shipRepository, PlayerRepository playerRepository, GameRepository gameRepository,  GamePlayerRepository gamePlayerRepository) {
 		return (args) -> {
 
 			// We create the players
@@ -67,7 +68,11 @@ public class BattleshipApplication {
 			List<String> locations22 = Arrays.asList("B6","B7");
 			List<String> locations21 = Arrays.asList("J6","J7");
 			List<String> locations23 = Arrays.asList("J6","J7","J8");
-			List<String> locations24 = Arrays.asList("I6","I7","I8");
+			List<String> locations24 = Arrays.asList("G1","G2","G3","G4");
+			List<String> locations25 = Arrays.asList("I1","J5","C5");
+			List<String> locations26 = Arrays.asList("B9","A9","A10");
+			List<String> locations27 = Arrays.asList("C2","D2","E2","E4","E10");
+
 
 			//We create the ships only with type, we then later assign the gameplayers and locations
 			Ship Carrier = new Ship("carrier");
@@ -167,6 +172,40 @@ public class BattleshipApplication {
 			shipRepository.save(Destroyer5);
 			shipRepository.save(Destroyer6);
 			shipRepository.save(Destroyer7);
+
+			Salvo salvo1 = new Salvo(gamePlayer1);
+			Salvo salvo2 = new Salvo(gamePlayer2);
+            Salvo salvo3 = new Salvo(gamePlayer1);
+            Salvo salvo4 = new Salvo(gamePlayer1);
+            Salvo salvo5 = new Salvo(gamePlayer3);
+            Salvo salvo6 = new Salvo(gamePlayer4);
+            Salvo salvo7 = new Salvo(gamePlayer5);
+            Salvo salvo8 = new Salvo(gamePlayer5);
+
+            salvo1.setLocations(locations25);
+            salvo2.setLocations(locations26);
+            salvo3.setLocations(locations27);
+            salvo4.setLocations(locations4);
+            salvo5.setLocations(locations5);
+            salvo6.setLocations(locations21);
+            salvo7.setLocations(locations23);
+            salvo8.setLocations(locations24);
+
+            salvo4.setTurn(2);
+            salvo5.setTurn(2);
+            salvo6.setTurn(2);
+            salvo7.setTurn(2);
+            salvo8.setTurn(3);
+
+            salvoRepository.save(salvo1);
+			salvoRepository.save(salvo2);
+            salvoRepository.save(salvo3);
+            salvoRepository.save(salvo4);
+            salvoRepository.save(salvo5);
+            salvoRepository.save(salvo6);
+            salvoRepository.save(salvo7);
+            salvoRepository.save(salvo8);
+
 
 		};
 
