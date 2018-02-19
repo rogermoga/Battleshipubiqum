@@ -32,3 +32,16 @@ table{
    justify-content: space-around;
 }
 
+.shotLoc{
+    background-color: yellow;
+}
+.opponentShotLoc{
+    background-color: yellow;
+}
+.opponentHitLoc{
+    background-color: red;
+}
+
+#scoretable{
+    border: 1px solid black;
+}

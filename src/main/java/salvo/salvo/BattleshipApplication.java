@@ -19,7 +19,7 @@ public class BattleshipApplication {
 	}
 
 	@Bean
-	public CommandLineRunner initData(SalvoRepository salvoRepository, ShipRepository shipRepository, PlayerRepository playerRepository, GameRepository gameRepository,  GamePlayerRepository gamePlayerRepository) {
+	public CommandLineRunner initData(ScoreRepository scoreRepository, SalvoRepository salvoRepository, ShipRepository shipRepository, PlayerRepository playerRepository, GameRepository gameRepository,  GamePlayerRepository gamePlayerRepository) {
 		return (args) -> {
 
 			// We create the players
@@ -206,6 +206,37 @@ public class BattleshipApplication {
             salvoRepository.save(salvo7);
             salvoRepository.save(salvo8);
 
+            Score score1 = new Score(1);
+            Score score2 = new Score(2);
+            Score score3 = new Score(1);
+            Score score4 = new Score(0.5);
+            Score score5 = new Score(0);
+            Score score6 = new Score(1.5);
+            Score score7 = new Score(3);
+
+            score1.setGame(game1);
+            score2.setGame(game2);
+            score3.setGame(game3);
+            score4.setGame(game3);
+            score5.setGame(game3);
+            score6.setGame(game3);
+            score7.setGame(game3);
+
+            score1.setPlayer(player1);
+            score2.setPlayer(player2);
+            score3.setPlayer(player3);
+            score4.setPlayer(player4);
+            score5.setPlayer(player5);
+            score6.setPlayer(player2);
+            score7.setPlayer(player4);
+
+            scoreRepository.save(score1);
+            scoreRepository.save(score2);
+            scoreRepository.save(score3);
+            scoreRepository.save(score4);
+            scoreRepository.save(score5);
+            scoreRepository.save(score6);
+            scoreRepository.save(score7);
 
 		};
 

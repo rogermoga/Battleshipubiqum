@@ -83,4 +83,13 @@ public class GamePlayer {
     public void setSalvoes(Set<Salvo> salvoes) {
         this.salvoes = salvoes;
     }
+
+    public double getScore(){
+        Score score = player1.getScore(game1);
+        if (score != null) {
+            return score.getScore();
+        }else{
+            return 0;
+        }
+    }
 }

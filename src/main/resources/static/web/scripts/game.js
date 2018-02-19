@@ -6,7 +6,7 @@ $(document).ready(function () {
     console.log("Gameplayer nº:" + gp);
 
     createTable("shiptable");
-    
+
     createTable("salvotable");
 
 
@@ -19,19 +19,55 @@ $(document).ready(function () {
         ShowPlayersInfo(data.Gameplayers);
 
         ShowShipLocations(data.Ships);
-        
-        ShowSalvoes(data.Salvoes);
+
+        ShowSalvoes(data.Salvoes, data.GameplayerID, data.Ships);
 
     });
 
 });
-function ShowSalvoes(salvoes){
-    for (var i= 0; i<salvoes.length; i++){
-        for (var j=0; j<salvoes[i].locations.length; j++){
+
+function ShowSalvoes(salvoes, gameplayer1id, ships) {
+    for (var i = 0; i < salvoes.length; i++) {
+
+        //shows my own shots
+        if (gameplayer1id == salvoes[i].player) {
+            for (var j = 0; j < salvoes[i].locations.length; j++) {
+
+                var loc = salvoes[i].locations[j];
+                document.getElementById("S" + loc).classList.add("shotLoc");
+
+            }
+        }else{
+        // shows the shots by the other player
+            for (var j = 0; j < salvoes[i].locations.length; j++) {
+                var loc = salvoes[i].locations[j];
+                
+                if (IsHit(loc, ships)) {
+                    document.getElementById("U" + loc).classList.add("opponentHitLoc");
+                    document.getElementById("U" + loc).innerHTML = salvoes[i].turn;
+                    
+                } else {
+                    document.getElementById("U" + loc).classList.add("opponentShotLoc");
+                }
+            }
+        }
+    }
+
+}
+
+function IsHit(loc, ships) {
+    
+   for (var i = 0; i < ships.length; i++) {
+
+        for (var j = 0; j < ships[i].locations.length; j++) {
+
+            if (loc == ships[i].locations[j]){
+                return true;
+            }
             
         }
     }
-    
+    return false;
 }
 
 function ShowShipLocations(ships) {
@@ -113,8 +149,8 @@ function createTable(tabla) {
             var onecell = document.createElement("td");
 
             onecell.classList.add("casilla");
-            
-            if (tabla == "shiptable" )  onecell.id = "U" + id;
+
+            if (tabla == "shiptable") onecell.id = "U" + id;
             else onecell.id = "S" + id;
 
             if (j == -1 || i == -1) {

@@ -74,14 +74,33 @@ public class GamesRestController {
         }
         mapDto.put("Ships", shipsInfo);
 
-        List<Map<String , Object>> salvoesInfo = MakeSalvoesList(gamePlayer.getSalvoes());
+        List<Map<String , Object>> player1salvoesInfo = MakeSalvoesList(gamePlayer.getSalvoes());
+
+        Set<GamePlayer> gameplayersSet = gamePlayer.getGame1().getGameplayers();
+
+        GamePlayer foundGamePlayer = FindGamePlayer(gameplayersSet, gamePlayer.getId());
+
+        List<Map<String, Object>> player2salvoesInfo = MakeSalvoesList(foundGamePlayer.getSalvoes());
+
+        List<Map<String , Object>> allPlayersSalvoesInfo = new ArrayList<Map<String , Object>>();
+        allPlayersSalvoesInfo.addAll(player1salvoesInfo);
+
+        if(player2salvoesInfo != null)  allPlayersSalvoesInfo.addAll(player2salvoesInfo);
 
 
-
-        mapDto.put("Salvoes", salvoesInfo);
+        mapDto.put("Salvoes", allPlayersSalvoesInfo);
 
         return mapDto;
+    }
 
+    private GamePlayer FindGamePlayer(Set<GamePlayer> gameplayersset, long player1id){
+        GamePlayer returnGamePlayer = new GamePlayer();
+        for (GamePlayer gameplayer : gameplayersset) {
+            if (gameplayer.getId() != player1id) {
+                returnGamePlayer = gameplayer;
+            }
+        }
+        return returnGamePlayer;
     }
 
     private List<Map<String,Object>> MakeSalvoesList(Set<Salvo> salvoes){
@@ -140,7 +159,7 @@ public class GamesRestController {
         gameDto.put("ID", game.getId() );
         gameDto.put("Creation_Date", game.getDate());
 
-          List<Map<String, Object>> gamePlayerDto;
+        List<Map<String, Object>> gamePlayerDto;
 
         gamePlayerDto = makeGamePlayerDTOList(game.getGameplayers());
         gameDto.put("Game_Players", gamePlayerDto);
@@ -176,6 +195,11 @@ public class GamesRestController {
         playerInfo =  MakePlayerDto(gamePlayer.getPlayer1());
 
         GamePlayerDto.put("Player", playerInfo);
+
+
+        double playerScore = gamePlayer.getScore();
+
+        GamePlayerDto.put("PlayerScore", playerScore);
 
         return GamePlayerDto;
     }
