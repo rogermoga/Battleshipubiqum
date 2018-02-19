@@ -218,8 +218,8 @@ public class BattleshipApplication {
             score2.setGame(game2);
             score3.setGame(game3);
             score4.setGame(game3);
-            score5.setGame(game3);
-            score6.setGame(game3);
+            score5.setGame(game2);
+            score6.setGame(game1);
             score7.setGame(game3);
 
             score1.setPlayer(player1);

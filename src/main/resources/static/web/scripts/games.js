@@ -5,7 +5,7 @@ $(document).ready(function () {
     $.ajax("/api/games").done(function (result) {
 
         console.log(result);
-
+        // recorremos el array de games
         for (var i=0; i< result.length; i++){
 
             var maxplayers = result[i].Game_Players.length;
@@ -26,6 +26,24 @@ $(document).ready(function () {
 
             game.appendChild(gamespan);
                 document.getElementById("gameslist").appendChild(game);
+            
+            for ( var j = 0; j< maxplayers.length ; j++){
+                
+                var playerInfo = document.createElement("tr");
+                
+                var playerEmail = document.createElement("td");
+                var total = document.createElement("td");
+                var won = document.createElement("td");
+                var lost = document.createElement("td");
+                var tied = document.createElement("td");
+                
+                
+                
+                
+               document.getElementById("scoretable").appendChild(playerInfo);
+  
+            }
+            
         }
     })
 });
