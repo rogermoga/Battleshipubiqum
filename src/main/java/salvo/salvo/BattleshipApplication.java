@@ -300,15 +300,17 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/web/scripts/games.js").permitAll()
 				.antMatchers("/web/styles/styles.css").permitAll()
 				.antMatchers("/api/games").permitAll()
+				.antMatchers("/api/login").permitAll()
+				.antMatchers("/api/logout").permitAll()
 
 				.anyRequest().fullyAuthenticated();
 
         http.formLogin()
-                .usernameParameter("name")
-                .passwordParameter("pwd")
-                .loginPage("/app/login");
+                .usernameParameter("Username")// if we dont use these, the default parameters srping uses are username and password
+                .passwordParameter("password")
+                .loginPage("/api/login");
 
-        http.logout().logoutUrl("/app/logout");
+        http.logout().logoutUrl("/api/logout");
 
 		// turn off checking for CSRF tokens
 		http.csrf().disable();
