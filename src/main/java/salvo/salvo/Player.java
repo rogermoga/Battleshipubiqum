@@ -13,6 +13,7 @@ public class Player {
     private long id;
     private String username;
     private String email;
+    private String password;
 
     @OneToMany(mappedBy="player1", fetch=FetchType.EAGER)
     private Set<GamePlayer> gameplayers = new HashSet<>();
@@ -22,9 +23,10 @@ public class Player {
 
     public Player(){}
 
-    public Player(String Username, String Email){
+    public Player(String Username, String Email, String password){
         this.username = Username;
         this.email = Email;
+        this.password = password;
     }
 
     public String getUsername() {
@@ -62,5 +64,13 @@ public class Player {
         return scores.stream()
                 .filter(b -> b.getGame().getId()== game.getId() )
                 .findFirst().orElse(null);
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

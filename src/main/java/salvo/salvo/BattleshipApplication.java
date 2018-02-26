@@ -1,12 +1,27 @@
 package salvo.salvo;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configurers.GlobalAuthenticationConfigurerAdapter;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.web.WebAttributes;
+import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.util.Arrays;
 import java.util.List;
 
@@ -23,11 +38,11 @@ public class BattleshipApplication {
 		return (args) -> {
 
 			// We create the players
-			Player player1 = new Player("Jack", "jBauer@gmail.com");
-			Player player2 = new Player("Chloe", "COBrian@gmail.com");
-			Player player3 = new Player("Kim", "patatas@gmail.com");
-			Player player4 = new Player("David", "Palmer@gmail.com");
-			Player player5 = new Player("Michelle", "Dessler@gmail.com");
+			Player player1 = new Player("Jack", "jBauer@gmail.com", "24");
+			Player player2 = new Player("Chloe", "COBrian@gmail.com", "42");
+			Player player3 = new Player("Kim", "patatas@gmail.com", "kb");
+			Player player4 = new Player("David", "Palmer@gmail.com", "mole");
+			Player player5 = new Player("Michelle", "Dessler@gmail.com", "patatas");
 			//We save the players in the playerRepository
 			playerRepository.save(player1);
 			playerRepository.save(player2);
@@ -207,17 +222,17 @@ public class BattleshipApplication {
             salvoRepository.save(salvo8);
 
             Score score1 = new Score(1);
-            Score score2 = new Score(2);
+            Score score2 = new Score(0);
             Score score3 = new Score(1);
             Score score4 = new Score(0.5);
-            Score score5 = new Score(0);
-            Score score6 = new Score(1.5);
-            Score score7 = new Score(3);
+            Score score5 = new Score(0.5);
+            Score score6 = new Score(0.5);
+            Score score7 = new Score(0.5);
 
             score1.setGame(game1);
             score2.setGame(game2);
             score3.setGame(game3);
-            score4.setGame(game3);
+            score4.setGame(game1);
             score5.setGame(game2);
             score6.setGame(game1);
             score7.setGame(game3);
@@ -225,8 +240,8 @@ public class BattleshipApplication {
             score1.setPlayer(player1);
             score2.setPlayer(player2);
             score3.setPlayer(player3);
-            score4.setPlayer(player4);
-            score5.setPlayer(player5);
+            score4.setPlayer(player5);
+            score5.setPlayer(player3);
             score6.setPlayer(player2);
             score7.setPlayer(player4);
 
@@ -244,3 +259,77 @@ public class BattleshipApplication {
 
 }
 
+@Configuration
+class WebSecurityConfiguration extends GlobalAuthenticationConfigurerAdapter {
+
+    @Autowired
+    PlayerRepository playerRepository;
+
+    @Override
+    public void init(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetailsService());
+    }
+
+    @Bean
+	UserDetailsService userDetailsService() {
+        return new UserDetailsService() {
+
+            @Override
+            public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+                Player player = playerRepository.findByUsername(email);
+                if (player != null) {
+                    return new User(player.getEmail(), player.getPassword(),
+                            AuthorityUtils.createAuthorityList("USER"));
+                } else {
+                    throw new UsernameNotFoundException("Unknown user: " + email);
+                }
+            }
+        };
+    }
+}
+
+@EnableWebSecurity
+@Configuration
+class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.authorizeRequests()
+
+				.antMatchers("/web/games.html").permitAll()
+				.antMatchers("/web/scripts/games.js").permitAll()
+				.antMatchers("/web/styles/styles.css").permitAll()
+				.antMatchers("/api/games").permitAll()
+
+				.anyRequest().fullyAuthenticated();
+
+        http.formLogin()
+                .usernameParameter("name")
+                .passwordParameter("pwd")
+                .loginPage("/app/login");
+
+        http.logout().logoutUrl("/app/logout");
+
+		// turn off checking for CSRF tokens
+		http.csrf().disable();
+
+		// if user is not authenticated, just send an authentication failure response
+		http.exceptionHandling().authenticationEntryPoint((req, res, exc) -> res.sendError(HttpServletResponse.SC_UNAUTHORIZED));
+
+		// if login is successful, just clear the flags asking for authentication
+		http.formLogin().successHandler((req, res, auth) -> clearAuthenticationAttributes(req));
+
+		// if login fails, just send an authentication failure response
+		http.formLogin().failureHandler((req, res, exc) -> res.sendError(HttpServletResponse.SC_UNAUTHORIZED));
+
+		// if logout is successful, just send a success response
+		http.logout().logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler());
+    }
+	private void clearAuthenticationAttributes(HttpServletRequest request) {
+		HttpSession session = request.getSession(false);
+		if (session != null) {
+			session.removeAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
+		}
+	}
+
+}

@@ -33,4 +33,5 @@ dependencies {
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 	compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.6'
 	compile("org.springframework.boot:spring-boot-devtools")
+	compile("org.springframework.boot:spring-boot-starter-security")
 }
