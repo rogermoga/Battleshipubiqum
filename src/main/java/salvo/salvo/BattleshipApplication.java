@@ -267,8 +267,8 @@ class WebSecurityConfiguration extends GlobalAuthenticationConfigurerAdapter {
 
     @Override
     public void init(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService());
-    }
+		auth.userDetailsService(userDetailsService());
+	}
 
     @Bean
 	UserDetailsService userDetailsService() {
@@ -276,7 +276,7 @@ class WebSecurityConfiguration extends GlobalAuthenticationConfigurerAdapter {
 
             @Override
             public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-                Player player = playerRepository.findByUsername(email);
+                Player player = playerRepository.findByEmail(email);
                 if (player != null) {
                     return new User(player.getEmail(), player.getPassword(),
                             AuthorityUtils.createAuthorityList("USER"));
@@ -306,8 +306,8 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.anyRequest().fullyAuthenticated();
 
         http.formLogin()
-                .usernameParameter("Username")// if we dont use these, the default parameters srping uses are username and password
-                .passwordParameter("password")
+                .usernameParameter("user")// if we dont use these, the default parameters srping uses are username and password
+                .passwordParameter("pass")
                 .loginPage("/api/login");
 
         http.logout().logoutUrl("/api/logout");

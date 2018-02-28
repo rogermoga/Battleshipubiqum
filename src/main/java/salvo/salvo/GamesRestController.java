@@ -2,6 +2,7 @@ package salvo.salvo;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,13 +15,20 @@ public class GamesRestController {
 
 
     @Autowired
+    PlayerRepository playerRepository;
+
+
+    @Autowired
     private GameRepository gameRepository;
 
     @Autowired
     private GamePlayerRepository gamePlayerRepository;
 
     @RequestMapping("/games")
-    public List<Map<String, Object>> dtoGames(){
+    public List<Map<String, Object>> dtoGames(Authentication authentication){
+
+        Player currentplayer = playerRepository.findByEmail(authentication.getName());
+
         List<Map<String, Object>> listdto = new ArrayList<Map<String,Object>>();
         // llenar lista
         List<Game> games = gameRepository.findAll();
