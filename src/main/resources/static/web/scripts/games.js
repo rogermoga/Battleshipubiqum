@@ -3,7 +3,9 @@ $(document).ready(function () {
 
     $.ajax("/api/games").done(function (result) {
 
+        var games = result.games;
         console.log(result);
+        console.log(games);
         
 
         //creo el array donde guardare los datos que necesito de los jugadores
@@ -12,21 +14,21 @@ $(document).ready(function () {
         console.log(playersScores);
 
         // recorremos el array de games
-        for (var i = 0; i < result.length; i++) {
+        for (var i = 0; i < games.length; i++) {
 
-            var maxplayers = result[i].Game_Players.length;
-            var gamePlayers = result[i].Game_Players;
+            var maxplayers = games[i].Game_Players.length;
+            var gamePlayers = games[i].Game_Players;
 
             var game = document.createElement("li");
             var gamespan = document.createElement("span");
-            var gamedate = new Date(result[i].Creation_Date).toLocaleString();
+            var gamedate = new Date(games[i].Creation_Date).toLocaleString();
 
-            gamespan.innerHTML = "<b>Game " + result[i].ID + "</b>  " + gamedate;
+            gamespan.innerHTML = "<b>Game " + games[i].ID + "</b>  " + gamedate;
             if (maxplayers == 1 || maxplayers == 2) {
-                gamespan.append(" Player 1: " + result[i].Game_Players[0].Player.Email);
+                gamespan.append(" Player 1: " + games[i].Game_Players[0].Player.Email);
             }
             if (maxplayers == 2) {
-                gamespan.append(" Player 2: " + result[i].Game_Players[1].Player.Email);
+                gamespan.append(" Player 2: " + games[i].Game_Players[1].Player.Email);
             }
 
             game.appendChild(gamespan);

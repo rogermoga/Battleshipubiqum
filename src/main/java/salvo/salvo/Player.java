@@ -29,6 +29,8 @@ public class Player {
         this.password = password;
     }
 
+
+
     public String getUsername() {
         return username;
     }
@@ -73,4 +75,5 @@ public class Player {
     public void setPassword(String password) {
         this.password = password;
     }
+
 }

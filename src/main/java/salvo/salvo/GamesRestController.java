@@ -1,6 +1,7 @@
 package salvo.salvo;
 
 
+import javafx.beans.binding.ObjectExpression;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,7 +16,7 @@ public class GamesRestController {
 
 
     @Autowired
-    PlayerRepository playerRepository;
+    private PlayerRepository playerRepository;
 
 
     @Autowired
@@ -25,23 +26,42 @@ public class GamesRestController {
     private GamePlayerRepository gamePlayerRepository;
 
     @RequestMapping("/games")
-    public List<Map<String, Object>> dtoGames(Authentication authentication){
+    public Map<String, Object> gamesAndAuthenDTO(Authentication authentication){
 
-        Player currentplayer = playerRepository.findByEmail(authentication.getName());
+        //el mapa que engloba tot
+        Map<String, Object> mapDTO = new LinkedHashMap<>();
 
-        List<Map<String, Object>> listdto = new ArrayList<Map<String,Object>>();
-        // llenar lista
-        List<Game> games = gameRepository.findAll();
-        for (int i = 0 ; i< games.size(); i++){
-            // Crear variable para el mapa
-            Map<String, Object> dtoGame;
-            // llenar el mapa
-            dtoGame = makeGameDTO(games.get(i));
+        if (authentication != null) {
+            Player loggedInplayer = playerRepository.findByEmail(authentication.getName());
 
-            //pushear mapa en la lista
-            listdto.add(dtoGame);
-        }
-        return listdto;
+            Map<String, Object> loggedinPlayerDTO = new LinkedHashMap<>();
+
+            loggedinPlayerDTO.put("id", loggedInplayer.getId());
+            loggedinPlayerDTO.put("name", loggedInplayer.getEmail());
+
+            mapDTO.put("player", loggedinPlayerDTO);
+
+            } else {
+             mapDTO.put("Error", "You Need To Log In");
+            }
+
+
+            List<Map<String, Object>> listdto = new ArrayList<Map<String, Object>>();
+            // llenar lista
+            List<Game> games = gameRepository.findAll();
+            for (int i = 0; i < games.size(); i++) {
+                // Crear variable para el mapa
+                Map<String, Object> dtoGame;
+                // llenar el mapa
+                dtoGame = makeGameDTO(games.get(i));
+
+                //pushear mapa en la lista
+                listdto.add(dtoGame);
+            }
+
+            mapDTO.put("games", listdto);
+
+        return mapDTO;
     }
 
     @RequestMapping("/game_view/{nn}")
@@ -100,6 +120,7 @@ public class GamesRestController {
 
         return mapDto;
     }
+
 
     private GamePlayer FindGamePlayer(Set<GamePlayer> gameplayersset, long player1id){
         GamePlayer returnGamePlayer = new GamePlayer();
