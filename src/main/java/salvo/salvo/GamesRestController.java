@@ -3,10 +3,11 @@ package salvo.salvo;
 
 import javafx.beans.binding.ObjectExpression;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
@@ -25,6 +26,23 @@ public class GamesRestController {
     @Autowired
     private GamePlayerRepository gamePlayerRepository;
 
+    @RequestMapping(path = "/players", method = RequestMethod.POST)
+    public ResponseEntity<String> createUser(@RequestParam String name, String password) {
+        if (name.isEmpty()) {
+            return new ResponseEntity<>("No name given", HttpStatus.FORBIDDEN);
+        }else {
+
+            Player player = playerRepository.findByEmail(name);
+            if (player != null) {
+                return new ResponseEntity<>("Name already used", HttpStatus.CONFLICT);
+            }else {
+
+                playerRepository.save(new Player(name, password));
+                return new ResponseEntity<>("Name added", HttpStatus.CREATED);
+            }
+        }
+    }
+
     @RequestMapping("/games")
     public Map<String, Object> gamesAndAuthenDTO(Authentication authentication){
 
@@ -34,10 +52,8 @@ public class GamesRestController {
         if (authentication != null) {
             Player loggedInplayer = playerRepository.findByEmail(authentication.getName());
 
-            Map<String, Object> loggedinPlayerDTO = new LinkedHashMap<>();
-
-            loggedinPlayerDTO.put("id", loggedInplayer.getId());
-            loggedinPlayerDTO.put("name", loggedInplayer.getEmail());
+            // creates a map for the logged in player info and calls a function to fill it
+            Map<String, Object> loggedinPlayerDTO = makeplayerDTO(loggedInplayer);
 
             mapDTO.put("player", loggedinPlayerDTO);
 
@@ -119,6 +135,14 @@ public class GamesRestController {
         mapDto.put("Salvoes", allPlayersSalvoesInfo);
 
         return mapDto;
+    }
+
+    //creates the Logged in Player DTO with the username and the player ID
+    private Map<String, Object> makeplayerDTO(Player player){
+        Map<String, Object> playerDTO = new LinkedHashMap<String, Object>();
+        playerDTO.put("id", player.getId());
+        playerDTO.put("name", player.getEmail());
+        return playerDTO;
     }
 
 
