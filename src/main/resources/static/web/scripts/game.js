@@ -1,5 +1,22 @@
 $(document).ready(function () {
     console.log("ready!");
+    
+      $('#logoutbutton').click(function (){
+        $.ajax({
+            timeout: 1000,
+            type: 'POST',
+            url: '/api/logout'
+            
+        }).done(function(){
+            
+            window.location.href="/web/games.html";
+            console.log("successfully logged out");
+            
+        }).fail(function(){
+            console.log("Not able to log out");
+        });
+      
+    });
 
     //var gp = getParameterByName("gp");
     var gp = getURL();

@@ -27,20 +27,69 @@ public class GamesRestController {
     private GamePlayerRepository gamePlayerRepository;
 
     @RequestMapping(path = "/players", method = RequestMethod.POST)
-    public ResponseEntity<String> createUser(@RequestParam String name, String password) {
+    public ResponseEntity<Map<String, Object>> createUser(@RequestParam String name, String password) {
         if (name.isEmpty()) {
-            return new ResponseEntity<>("No name given", HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>(makeMap("error", "No name given"), HttpStatus.FORBIDDEN);
         }else {
 
             Player player = playerRepository.findByEmail(name);
             if (player != null) {
-                return new ResponseEntity<>("Name already used", HttpStatus.CONFLICT);
+                return new ResponseEntity<>(makeMap("error", "Name already used"), HttpStatus.CONFLICT);
             }else {
 
-                playerRepository.save(new Player(name, password));
-                return new ResponseEntity<>("Name added", HttpStatus.CREATED);
+                Player newPlayer = playerRepository.save(new Player(name, password));
+                return new ResponseEntity<>(makeMap("id",newPlayer.getId() ), HttpStatus.CREATED);
             }
         }
+    }
+    // if its logged in it creates a new game and a Gameplayer
+    @RequestMapping (path = "/games", method = RequestMethod.POST)
+    public ResponseEntity<Object> createGame(Authentication authentication){
+        if (authentication == null){
+            return new ResponseEntity<>(makeMap("error","You need to log in"), HttpStatus.FORBIDDEN);
+        }else {
+
+            Player loggedInplayer = playerRepository.findByEmail(authentication.getName());
+            Game newGame = gameRepository.save(new Game());
+            GamePlayer newGamePlayer = gamePlayerRepository.save(new GamePlayer(newGame,loggedInplayer ));
+            return new ResponseEntity<>(makeMap("gpid",newGamePlayer.getId()), HttpStatus.CREATED);
+        }
+    }
+
+    @RequestMapping (path = "/game/{nn}/players", method = RequestMethod.POST)
+    public ResponseEntity<Object> joinGame (@PathVariable Long nn, Authentication authentication){
+
+        if (authentication == null){
+            return new ResponseEntity<>(makeMap("error","You need to log in"), HttpStatus.FORBIDDEN);
+        }
+
+        Game game = gameRepository.findOne(nn);
+        if(game == null) {
+            return new ResponseEntity<>(makeMap("error","No such game"), HttpStatus.NOT_FOUND);
+        }
+
+        if (game.getGameplayers().size() != 1) {
+            return new ResponseEntity<>(makeMap("error", "Game is full"), HttpStatus.FORBIDDEN);
+        }
+
+        Player loggedInplayer = playerRepository.findByEmail(authentication.getName());
+        for (GamePlayer gameplayer : game.getGameplayers()) {
+
+            if(loggedInplayer.getId() == gameplayer.getId()) {
+            return new ResponseEntity<>(makeMap("error", "You are already in this game"), HttpStatus.CONFLICT);
+            }
+        }
+
+        GamePlayer newGamePlayer = gamePlayerRepository.save(new GamePlayer(game, loggedInplayer));
+        return new ResponseEntity<>(makeMap("gpid",newGamePlayer.getId()), HttpStatus.CREATED);
+
+    }
+
+    //Create a map with the messages from the responseEntity when creating a new player
+    private Map<String, Object> makeMap(String key, Object value) {
+        Map<String, Object> map = new LinkedHashMap<>();
+        map.put(key, value);
+        return map;
     }
 
     @RequestMapping("/games")
@@ -81,10 +130,21 @@ public class GamesRestController {
     }
 
     @RequestMapping("/game_view/{nn}")
-    public  Map<String, Object> dtoGameView(@PathVariable Long nn){
+    public  ResponseEntity<Object> dtoGameView(@PathVariable Long nn, Authentication authentication){
 
         //seleccionamos el gameplayer que nos ha dado el parametro nn
         GamePlayer gamePlayer = gamePlayerRepository.findOne(nn);
+
+        Player loggedInplayer = playerRepository.findByEmail(authentication.getName());
+
+        if (gamePlayer.getPlayer1().getId() != loggedInplayer.getId()){
+            return new ResponseEntity<Object>(makeMap("error", "Not Authorized"), HttpStatus.UNAUTHORIZED);
+        }else if (authentication == null) {
+
+            return new ResponseEntity<Object>(makeMap("error", "No user logged in"), HttpStatus.UNAUTHORIZED);
+
+        }else{
+
 
         Map<String, Object> mapDto = new LinkedHashMap<>();
 
@@ -134,8 +194,11 @@ public class GamesRestController {
 
         mapDto.put("Salvoes", allPlayersSalvoesInfo);
 
-        return mapDto;
+        return new ResponseEntity<Object>(mapDto, HttpStatus.OK);
+        }
     }
+
+
 
     //creates the Logged in Player DTO with the username and the player ID
     private Map<String, Object> makeplayerDTO(Player player){

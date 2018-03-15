@@ -45,3 +45,7 @@ table{
 #scoretable{
     border: 1px solid black;
 }
+#loginform,
+#logout{
+    display: inline;
+}
